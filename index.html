@@ -1,148 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gensyn Node Readiness Checker</title>
-  <meta name="description" content="A polished, multi‑color, animated tool to check if your system is ready to run a Gensyn node, with guides and official links." />
+  <title>Gensyn Node Readiness Hub</title>
+  <meta name="description" content="A colorful, professional hub to check your Gensyn node readiness, explore detailed guides, FAQs, and official resources." />
   <meta name="theme-color" content="#0b1020" />
   <style>
-    /* =============== Theme & Base =============== */
+    /* ================== Theme and palette ================== */
     :root{
-      --bg: #070b14;
-      --panel: rgba(16,24,40,.6);
-      --text: #e6edf6;
-      --muted: #a6b1c3;
-      --border: rgba(255,255,255,.12);
+      --bg:#060911;
+      --text:#e8edf6;
+      --muted:#9da9bd;
+      --panel:rgba(18,26,44,.72);
+      --border:rgba(255,255,255,.12);
 
-      /* Accent palette (multi color) */
-      --c1: #22d3ee; /* cyan */
-      --c2: #a78bfa; /* violet */
-      --c3: #f59e0b; /* amber */
-      --c4: #10b981; /* green */
-      --c5: #ef4444; /* red */
+      /* Multi-color accent spectrum */
+      --c1:#22d3ee; /* cyan */
+      --c2:#a78bfa; /* violet */
+      --c3:#f59e0b; /* amber */
+      --c4:#10b981; /* green */
+      --c5:#ef4444; /* red */
+      --c6:#fb7185; /* rose */
+      --c7:#38bdf8; /* sky */
+      --c8:#f472b6; /* pink */
 
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-      --blur: saturate(160%) blur(6px);
+      --radius:16px;
+      --shadow:0 12px 34px rgba(0,0,0,.35);
+      --blur:saturate(160%) blur(6px);
     }
     [data-theme="light"]{
-      --bg: #f7fafc;
-      --panel: rgba(255,255,255,.7);
-      --text: #0e141b;
-      --muted: #4a5568;
-      --border: rgba(0,0,0,.08);
-      --shadow: 0 10px 30px rgba(0,0,0,.1);
+      --bg:#f7fafc;
+      --text:#0e141b;
+      --muted:#4a5568;
+      --panel:rgba(255,255,255,.8);
+      --border:rgba(0,0,0,.08);
+      --shadow:0 12px 34px rgba(0,0,0,.1);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
       color:var(--text);
       background:
-        radial-gradient(1200px 600px at 80% -20%, #1f2937 0%, var(--bg) 45%, #05070d 100%),
-        linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.08));
+        radial-gradient(1600px 800px at 85% -10%, #172133 0%, var(--bg) 45%, #03060c 100%),
+        linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.08), rgba(244,114,182,.08));
       overflow-x:hidden;
     }
 
-    /* =============== Animated background particles =============== */
-    .particles{
+    /* ================== Animated ribbons & particles ================== */
+    .ribbons{
       position:fixed; inset:0; pointer-events:none; z-index:0;
       background:
-        radial-gradient(10px 10px at 15% 30%, rgba(34,211,238,.12), transparent 60%),
-        radial-gradient(10px 10px at 75% 20%, rgba(167,139,250,.12), transparent 60%),
-        radial-gradient(10px 10px at 60% 80%, rgba(245,158,11,.12), transparent 60%),
-        radial-gradient(10px 10px at 30% 70%, rgba(16,185,129,.12), transparent 60%);
-      animation: floatBG 16s ease-in-out infinite alternate;
+        conic-gradient(from 200deg at 20% -10%, rgba(34,211,238,.08), transparent 30%),
+        conic-gradient(from 40deg at 90% -10%, rgba(167,139,250,.1), transparent 30%),
+        conic-gradient(from 60deg at 50% 110%, rgba(244,114,182,.08), transparent 30%);
+      animation: drift 22s ease-in-out infinite alternate;
+      mask-image: radial-gradient(1200px 580px at 50% 0%, #000, transparent 70%);
     }
-    @keyframes floatBG{
-      from{transform:translateY(0)}
-      to{transform:translateY(-12px)}
-    }
+    @keyframes drift{ from{transform:translateY(0)} to{transform:translateY(-16px)} }
 
-    /* =============== Top Nav =============== */
+    /* Subtle sparkles */
+    .sparkles{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(2px 2px at 25% 30%, rgba(255,255,255,.2), transparent 70%),
+        radial-gradient(2px 2px at 75% 20%, rgba(255,255,255,.18), transparent 70%),
+        radial-gradient(2px 2px at 60% 75%, rgba(255,255,255,.15), transparent 70%),
+        radial-gradient(2px 2px at 35% 65%, rgba(255,255,255,.18), transparent 70%);
+      animation: twinkle 8s linear infinite;
+      opacity:.6;
+    }
+    @keyframes twinkle{ 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.5)} }
+
+    /* ================== Nav ================== */
     .nav{
       position:sticky; top:0; z-index:10;
-      backdrop-filter: var(--blur);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      backdrop-filter:var(--blur);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       border-bottom:1px solid var(--border);
     }
     .nav-inner{
-      max-width:1100px; margin:0 auto; padding:12px 20px;
+      max-width:1200px; margin:0 auto; padding:12px 22px;
       display:flex; align-items:center; justify-content:space-between;
     }
-    .brand{
-      display:flex; align-items:center; gap:12px; font-weight:700;
-      letter-spacing:.3px;
-    }
-    .brand img{
-      width:34px; height:34px; border-radius:8px; object-fit:contain;
-      filter:drop-shadow(0 4px 10px rgba(34,211,238,.35));
-    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
+    .brand svg{ width:34px; height:34px; filter:drop-shadow(0 6px 16px rgba(34,211,238,.35)); }
     .nav-links a{
-      margin-left:16px; color:var(--text); text-decoration:none; font-weight:600;
+      margin-left:16px; color:var(--text); text-decoration:none; font-weight:700;
       border-bottom:2px solid transparent; padding-bottom:4px;
-      transition:border-color .2s ease, color .2s ease;
+      transition:border-color .2s ease, color .2s ease, transform .2s ease;
     }
-    .nav-links a:hover{ border-color:var(--c1); color:var(--c1) }
-    .toggle{
-      display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-weight:600;
-      color:var(--muted);
-    }
+    .nav-links a:hover{ border-color:var(--c1); color:var(--c1); transform:translateY(-1px) }
+    .toggle{ cursor:pointer; margin-left:16px; color:var(--muted); font-weight:700 }
 
-    /* =============== Hero =============== */
+    /* ================== Hero ================== */
     header{
-      position:relative; z-index:1;
-      text-align:center;
-      padding:64px 20px 36px;
+      position:relative; z-index:1; text-align:center;
+      padding:80px 20px 40px;
       background:
-        conic-gradient(from 210deg at 55% -10%, rgba(34,211,238,.25), rgba(167,139,250,.25), rgba(16,185,129,.25), rgba(245,158,11,.25), rgba(34,211,238,.25));
-      mask-image: linear-gradient(#000, transparent 85%);
+        conic-gradient(from 210deg at 55% -10%, rgba(34,211,238,.25), rgba(167,139,250,.25), rgba(16,185,129,.25), rgba(245,158,11,.25), rgba(244,114,182,.25));
+      mask-image:linear-gradient(#000, transparent 90%);
     }
-    .hero-wrap{
-      max-width:900px; margin:0 auto;
-    }
-    .title{
-      font-size:clamp(28px,4.6vw,44px); margin:0 0 8px; font-weight:800;
-    }
-    .subtitle{
-      margin:0 auto; max-width:780px; color:var(--muted); font-size:clamp(14px,2.4vw,18px);
-    }
-    .cta-row{
-      margin-top:18px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
-    }
+    .hero-wrap{ max-width:1000px; margin:0 auto; }
+    .title{ font-size:clamp(30px,4.8vw,52px); margin:0 0 10px; font-weight:900; letter-spacing:.2px; }
+    .subtitle{ margin:0 auto; max-width:820px; color:var(--muted); font-size:clamp(14px,2.4vw,18px) }
+    .cta-row{ margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
     .btn{
-      display:inline-flex; align-items:center; gap:10px; padding:12px 16px;
+      display:inline-flex; align-items:center; gap:10px; padding:12px 18px;
       border-radius:12px; border:1px solid var(--border);
-      background: linear-gradient(180deg, #0fb7c8, #0aa9b8);
-      color:#041016; font-weight:700; cursor:pointer; box-shadow:var(--shadow);
+      background:linear-gradient(90deg, var(--c1), var(--c2), var(--c8));
+      background-size:200% 200%;
+      color:#041016; font-weight:800; cursor:pointer; box-shadow:var(--shadow);
+      transition: background-position .4s ease, transform .2s ease;
     }
+    .btn:hover{ background-position:100% 0; transform:translateY(-2px) }
     .btn.secondary{
-      background:linear-gradient(180deg, rgba(167,139,250,.25), rgba(34,211,238,.18));
-      color:var(--text);
+      background:linear-gradient(90deg, var(--c3), var(--c4), var(--c7));
+      color:#041016;
     }
 
-    /* =============== Layout =============== */
-    main{ max-width:1100px; margin:22px auto 60px; padding:0 20px; z-index:1; position:relative; }
-    .grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:22px; }
-    @media (max-width:980px){ .grid{ grid-template-columns:1fr } }
+    /* ================== Layout & cards ================== */
+    main{ max-width:1200px; margin:26px auto 80px; padding:0 22px; z-index:1; position:relative; }
+    .grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:24px; }
+    @media (max-width:1020px){ .grid{ grid-template-columns:1fr } }
 
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       border:1px solid var(--border); border-radius:var(--radius);
-      padding:18px; box-shadow:var(--shadow); backdrop-filter: var(--blur);
-      transition: transform .2s ease, border-color .2s ease;
+      padding:20px; box-shadow:var(--shadow); backdrop-filter:var(--blur);
+      transition:transform .2s ease, border-color .2s ease;
     }
     .card:hover{ transform:translateY(-4px); border-color:rgba(34,211,238,.35) }
     .section-title{
-      margin:0 0 12px; font-weight:800; font-size:20px;
-      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+      margin:0 0 12px; font-weight:900; font-size:22px;
+      background:linear-gradient(90deg, var(--c1), var(--c2), var(--c3), var(--c8));
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
+    .pill{
+      display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; color:#041016;
+      background:linear-gradient(90deg, var(--c1), var(--c4)); border:1px solid rgba(34,211,238,.35);
+      margin-left:8px;
+    }
 
-    /* =============== Form =============== */
+    /* ================== Form ================== */
     label{ display:block; font-size:13px; color:var(--muted); margin:12px 0 6px; }
     input, select{
       width:100%; padding:12px 12px; border-radius:12px;
@@ -152,21 +156,22 @@
     [data-theme="light"] input, [data-theme="light"] select{ background:#fff }
     input:focus, select:focus{ border-color:var(--c2); box-shadow:0 0 0 3px rgba(167,139,250,.25) }
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media (max-width:720px){ .row{ grid-template-columns:1fr } }
+    @media (max-width:760px){ .row{ grid-template-columns:1fr } }
     .helper{ font-size:12px; color:var(--muted); margin-top:6px; }
 
-    /* =============== Results =============== */
+    /* ================== Results ================== */
     .score-wrap{ display:flex; align-items:center; gap:14px; margin:10px 0 8px; }
-    .score{ font-size:42px; font-weight:800; letter-spacing:.5px; }
-    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; color:#041016; background:var(--c1); border:1px solid rgba(34,211,238,.35) }
-    .status{ font-weight:800; margin:8px 0 6px }
+    .score{ font-size:48px; font-weight:900; letter-spacing:.5px; }
+    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; color:#041016;
+      background:var(--c1); border:1px solid rgba(34,211,238,.35) }
+    .status{ font-weight:900; margin:8px 0 6px }
     .status.ok{ color:var(--c4) }
     .status.warn{ color:var(--c3) }
     .status.bad{ color:var(--c5) }
     ul{ padding-left:18px; margin:10px 0 }
     li{ margin:8px 0 }
 
-    /* =============== Links & Guides =============== */
+    /* ================== Link list ================== */
     .link-list a{
       display:inline-flex; align-items:center; gap:10px; margin:8px 12px 8px 0;
       padding:10px 12px; border-radius:12px; text-decoration:none; color:var(--text);
@@ -175,34 +180,49 @@
       transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
     .link-list a:hover{ transform:translateY(-2px); border-color:rgba(34,211,238,.35) }
-    .tag{
-      display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
-      background:linear-gradient(90deg, var(--c1), var(--c2)); color:#041016; border:1px solid rgba(34,211,238,.35);
-      margin-left:10px;
-    }
 
-    /* =============== Footer =============== */
-    footer{
-      text-align:center; color:var(--muted); font-size:13px; padding:28px; margin-top:24px;
-    }
+    /* ================== Timeline & FAQ ================== */
+    .timeline{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width:900px){ .timeline{ grid-template-columns:1fr } }
+    .step{ padding:14px; border-radius:12px; border:1px dashed var(--border); }
+    .step h4{ margin:0 0 8px; }
+    .faq{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width:900px){ .faq{ grid-template-columns:1fr } }
+    .qa{ padding:14px; border-radius:12px; border:1px dashed var(--border); }
+
+    /* ================== Footer ================== */
+    footer{ text-align:center; color:var(--muted); font-size:13px; padding:32px; margin-top:32px; }
   </style>
 </head>
-<body data-theme="dark">
-  <div class="particles"></div>
+<body>
+  <div class="ribbons"></div>
+  <div class="sparkles"></div>
 
   <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner">
-      <div class="brand">
-        <!-- Replace logo.png with your Gensyn logo file in repo -->
-        <img src="logo.png" alt="Gensyn logo" />
-        <span>Gensyn Readiness</span>
+      <div class="brand" aria-label="Gensyn logo and brand">
+        <!-- Inline SVG logo so it always loads -->
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="30" fill="url(#g1)"/>
+          <path d="M20 40c4-10 12-16 24-16" stroke="#041016" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <circle cx="20" cy="40" r="3" fill="#041016"/>
+          <circle cx="44" cy="24" r="3" fill="#041016"/>
+        </svg>
+        <span>Gensyn Readiness Hub</span>
       </div>
       <div class="nav-links">
         <a href="#tool">Checker</a>
         <a href="#guides">Guides</a>
+        <a href="#roles">Roles</a>
+        <a href="#faq">FAQ</a>
         <a href="#links">Official links</a>
-        <a class="toggle" id="themeToggle" title="Toggle theme">🌓 Theme</a>
+        <span class="toggle" id="themeToggle" title="Toggle theme">🌓 Theme</span>
       </div>
     </div>
   </nav>
@@ -212,11 +232,11 @@
     <div class="hero-wrap">
       <h1 class="title">Run a Gensyn node with confidence</h1>
       <p class="subtitle">
-        A professional, multi‑color tool to assess your system for Gensyn. Get a readiness score, clear suggestions, and curated resources.
+        A colorful, professional hub to assess your system, learn best practices, and plug into Gensyn’s culture. Readiness score, deep guides, FAQs, and official resources — all in one place.
       </p>
       <div class="cta-row">
         <a class="btn" href="#tool">Check readiness</a>
-        <a class="btn secondary" href="#guides">View guides</a>
+        <a class="btn secondary" href="#guides">Explore guides</a>
       </div>
     </div>
   </header>
@@ -225,7 +245,7 @@
     <div class="grid" id="tool">
       <!-- Checker -->
       <section class="card">
-        <h2 class="section-title">System readiness checker</h2>
+        <h2 class="section-title">System readiness checker <span class="pill">Interactive</span></h2>
 
         <label for="gpuName">GPU name</label>
         <input id="gpuName" placeholder="e.g., NVIDIA GeForce RTX 3060" />
@@ -272,19 +292,17 @@
           </div>
         </div>
 
-        <p class="helper">Tip: If you’re unsure about CUDA cores, search your exact GPU model specs.</p>
+        <p class="helper">Weights: VRAM 40% • CUDA 25% • OS 10% • RAM 10% • CPU 10% • Storage 5%</p>
 
         <div class="cta-row" style="justify-content:flex-start;">
           <button class="btn" id="checkBtn">Calculate readiness</button>
           <button class="btn secondary" id="resetBtn" title="Clear all fields">Reset</button>
         </div>
-
-        <p class="helper">Weights: VRAM 40% • CUDA 25% • OS 10% • RAM 10% • CPU 10% • Storage 5%</p>
       </section>
 
       <!-- Results -->
       <section class="card" aria-live="polite">
-        <h2 class="section-title">Results & suggestions</h2>
+        <h2 class="section-title">Results & suggestions <span class="pill">Actionable</span></h2>
 
         <div class="score-wrap">
           <div class="score" id="score">--</div>
@@ -305,30 +323,101 @@
       </section>
     </div>
 
-    <!-- Guides -->
+    <!-- Deep Guides -->
     <section class="card" id="guides">
-      <h2 class="section-title">Guides: running nodes & earning roles</h2>
+      <h2 class="section-title">Deep guides: setup, ops, and optimization</h2>
 
+      <div class="timeline">
+        <div class="step">
+          <h4>1) Hardware baseline</h4>
+          <ul>
+            <li><strong>GPU:</strong> RTX 3060+ recommended (12 GB VRAM ideal). On AMD, verify ROCm support.</li>
+            <li><strong>CPU:</strong> 6+ cores for steady throughput.</li>
+            <li><strong>RAM:</strong> 16 GB recommended; 8 GB is a minimum.</li>
+            <li><strong>Storage:</strong> 100 GB free to accommodate logs/datasets.</li>
+          </ul>
+        </div>
+        <div class="step">
+          <h4>2) OS & drivers</h4>
+          <ul>
+            <li><strong>OS:</strong> Ubuntu 22.04 LTS preferred; Windows works but Linux is more reliable.</li>
+            <li><strong>Drivers:</strong> Latest NVIDIA drivers + CUDA toolkit. Keep kernel and packages up‑to‑date.</li>
+            <li><strong>Containers:</strong> Ensure Docker/podman are installed if required by your workflow.</li>
+          </ul>
+        </div>
+        <div class="step">
+          <h4>3) Configuration & security</h4>
+          <ul>
+            <li><strong>Environment:</strong> Set proper permissions, avoid running as root for routine tasks.</li>
+            <li><strong>Networking:</strong> Stable bandwidth, avoid aggressive power saving; keep ports as required by docs.</li>
+            <li><strong>Monitoring:</strong> Track logs, GPU util, memory pressure; alert on failures.</li>
+          </ul>
+        </div>
+        <div class="step">
+          <h4>4) Optimization tips</h4>
+          <ul>
+            <li><strong>GPU:</strong> Update drivers, test workloads, ensure adequate cooling.</li>
+            <li><strong>RAM/storage:</strong> Close background apps; free disk space regularly.</li>
+            <li><strong>OS:</strong> Prefer Linux for stability; tune swappiness and I/O scheduler if needed.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roles -->
+    <section class="card" id="roles">
+      <h2 class="section-title">Community roles: Rover → Navigator → Pioneer</h2>
       <div class="row">
         <div class="card">
-          <h3 class="section-title">Run a node (overview)</h3>
+          <h3 class="section-title">Rover</h3>
+          <p>Be consistently active, help others, and strengthen the daily vibe. Contributions count from day one.</p>
           <ul>
-            <li><strong>Hardware:</strong> 6+ CPU cores, 16 GB RAM, 100 GB storage, RTX 3060+ recommended.</li>
-            <li><strong>OS:</strong> Ubuntu 22.04 LTS for reliability; Windows works but Linux preferred.</li>
-            <li><strong>Drivers:</strong> Latest NVIDIA + CUDA; on AMD, check ROCm compatibility.</li>
-            <li><strong>Ops:</strong> Monitor logs, keep system updated, allocate stable network bandwidth.</li>
+            <li><strong>Chats:</strong> Positive, helpful, responsive.</li>
+            <li><strong>Support:</strong> Answer questions, share fixes.</li>
+            <li><strong>Consistency:</strong> Show up daily; avoid spam.</li>
           </ul>
-          <span class="tag">Quick start</span>
         </div>
-
         <div class="card">
-          <h3 class="section-title">Community roles (path)</h3>
-          <ol>
-            <li><strong>Rover:</strong> Be active, help others, keep chats positive.</li>
-            <li><strong>Navigator:</strong> Create guides/tools, support programs, take initiative.</li>
-            <li><strong>Pioneer:</strong> Consistency + creativity + culture; lead discussions and welcome newcomers.</li>
-          </ol>
-          <span class="tag">Culture</span>
+          <h3 class="section-title">Navigator</h3>
+          <p>Take initiative, support programs, and create meaningful resources.</p>
+          <ul>
+            <li><strong>Guides/tools:</strong> Write tutorials, build utilities.</li>
+            <li><strong>Coordination:</strong> Organize threads, help with events.</li>
+            <li><strong>Impact:</strong> Quality > quantity; keep things useful.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="section-title">Pioneer</h3>
+          <p>The inner circle of culture — the ones who carry the spirit forward.</p>
+          <ul>
+            <li><strong>Leadership:</strong> Start discussions, welcome newcomers.</li>
+            <li><strong>Creativity:</strong> Memes, art, threads, and thoughtful posts.</li>
+            <li><strong>Trust:</strong> Visible effort and reliability over time.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="helper">Applications typically open periodically; mods review consistency, creativity, and impact — not just numbers.</p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="card" id="faq">
+      <h2 class="section-title">FAQ: common questions</h2>
+      <div class="faq">
+        <div class="qa">
+          <h4>Which OS is best?</h4>
+          <p><strong>Linux (Ubuntu 22.04+)</strong> is generally preferred for stability and driver support. Windows can work with proper NVIDIA + CUDA setup.</p>
+        </div>
+        <div class="qa">
+          <h4>Is AMD supported?</h4>
+          <p>AMD may require <strong>ROCm</strong> and specific versions; check compatibility carefully and community experiences before committing.</p>
+        </div>
+        <div class="qa">
+          <h4>How do I increase my readiness score?</h4>
+          <p>Biggest gains come from <strong>GPU/VRAM</strong> improvements. Then optimize RAM, OS, drivers, and storage.</p>
+        </div>
+        <div class="qa">
+          <h4>Does Windows pass?</h4>
+          <p>Yes, but you might be “Borderline” unless hardware is strong and drivers are tuned. Linux usually bumps reliability.</p>
         </div>
       </div>
     </section>
@@ -342,7 +431,7 @@
         <a href="https://docs.gensyn.ai" target="_blank" rel="noopener">📚 Gensyn Docs</a>
         <a href="https://discord.gg/gensyn" target="_blank" rel="noopener">💬 Gensyn Discord</a>
       </div>
-      <p class="helper">Tip: Share your readiness result in Discord for feedback from mods and contributors.</p>
+      <p class="helper">Share your readiness result in Discord to get feedback from mods and contributors.</p>
     </section>
   </main>
 
@@ -352,11 +441,12 @@
 
   <script>
     // Theme toggle
+    const root = document.documentElement;
     const toggle = document.getElementById("themeToggle");
-    const root = document.body;
     toggle.addEventListener("click", () => {
       const next = root.getAttribute("data-theme")==="light" ? "dark" : "light";
       root.setAttribute("data-theme", next);
+      document.body.setAttribute("data-theme", next);
     });
 
     // Heuristic baselines (tune as needed)
@@ -439,12 +529,12 @@
         os: document.getElementById("os").value
       };
 
-      const vramScore = scoreLinear(inputs.vram, BASE.vram_min, BASE.vram_ok);
-      const cudaScore = scoreLinear(inputs.cuda, BASE.cuda_min, BASE.cuda_ok);
-      const ramScore  = scoreLinear(inputs.ram, BASE.ram_min, BASE.ram_ok);
-      const cpuScore  = scoreLinear(inputs.cpuCores, BASE.cpu_min, BASE.cpu_ok);
+      const vramScore    = scoreLinear(inputs.vram, BASE.vram_min, BASE.vram_ok);
+      const cudaScore    = scoreLinear(inputs.cuda, BASE.cuda_min, BASE.cuda_ok);
+      const ramScore     = scoreLinear(inputs.ram, BASE.ram_min, BASE.ram_ok);
+      const cpuScore     = scoreLinear(inputs.cpuCores, BASE.cpu_min, BASE.cpu_ok);
       const storageScore = scoreLinear(inputs.storage, BASE.storage_min, BASE.storage_ok);
-      const osScore = clamp01(OS_SCORES[inputs.os] || 0.5);
+      const osScore      = clamp01(OS_SCORES[inputs.os] || 0.5);
 
       const total =
         vramScore   * WEIGHTS.vram +
