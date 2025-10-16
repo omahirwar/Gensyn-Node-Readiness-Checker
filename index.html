@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gensyn Node Readiness Checker</title>
+  <meta name="description" content="Check if your system is ready to run a Gensyn node. Get a readiness score, guides, and official resources." />
+  <style>
+    /* ====== Base Styles ====== */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    a { color: #22d3ee; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ====== Hero Section ====== */
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(120deg, #0ea5e9, #22d3ee, #0ea5e9);
+      background-size: 300% 300%;
+      animation: gradientMove 8s ease infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header img {
+      width: 100px;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    header h1 { font-size: 2.5rem; margin: 0; }
+    header p { max-width: 600px; margin: 10px auto 0; }
+
+    /* ====== Sections ====== */
+    section {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+    h2 { border-left: 4px solid #22d3ee; padding-left: 10px; }
+
+    /* ====== Card Style ====== */
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .card:hover { transform: translateY(-5px); }
+
+    /* ====== Form ====== */
+    label { display: block; margin: 10px 0 5px; }
+    input, select {
+      width: 100%; padding: 10px; border-radius: 8px;
+      border: none; margin-bottom: 10px;
+    }
+    button {
+      background: #22d3ee; border: none; padding: 12px 20px;
+      border-radius: 8px; cursor: pointer; font-weight: bold;
+    }
+    button:hover { background: #0ea5e9; }
+
+    /* ====== Result ====== */
+    #score { font-size: 2rem; font-weight: bold; }
+    .status.ok { color: #10b981; }
+    .status.warn { color: #f59e0b; }
+    .status.bad { color: #ef4444; }
+
+    /* ====== Footer ====== */
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: #0f172a;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <header>
+    <img src="https://cryptologos.cc/logos/gensyn-gensyn-logo.png" alt="Gensyn Logo" />
+    <h1>Gensyn Node Readiness Checker</h1>
+    <p>Check if your system is ready to run a Gensyn node. Get a readiness score, guides, and official resources.</p>
+  </header>
+
+  <!-- Tool -->
+  <section>
+    <h2>⚙️ Check Your System</h2>
+    <div class="card">
+      <label>GPU Name</label>
+      <input id="gpuName" placeholder="e.g. RTX 3060" />
+      <label>VRAM (GB)</label>
+      <input id="vram" type="number" />
+      <label>CUDA Cores</label>
+      <input id="cuda" type="number" />
+      <label>CPU Cores</label>
+      <input id="cpuCores" type="number" />
+      <label>System RAM (GB)</label>
+      <input id="ram" type="number" />
+      <label>Free Storage (GB)</label>
+      <input id="storage" type="number" />
+      <label>Operating System</label>
+      <select id="os">
+        <option>Ubuntu 22.04+</option>
+        <option>Debian 12+</option>
+        <option>Windows 11</option>
+        <option>Windows 10</option>
+        <option>macOS</option>
+      </select>
+      <button onclick="checkReadiness()">Check Readiness</button>
+      <p id="score">--</p>
+      <p id="verdict" class="status"></p>
+      <ul id="suggestions"></ul>
+    </div>
+  </section>
+
+  <!-- Guides -->
+  <section>
+    <h2>📖 Guides</h2>
+    <div class="card">
+      <h3>How to Run a Node</h3>
+      <ol>
+        <li>Prepare a system with 6+ CPU cores, 16GB RAM, 100GB storage, and RTX 3060+ GPU.</li>
+        <li>Install Ubuntu 22.04 LTS for best stability.</li>
+        <li>Follow the official <a href="https://github.com/gensynai" target="_blank">Gensyn GitHub</a> setup guide.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>How to Earn Roles</h3>
+      <ul>
+        <li>Be active and helpful in Discord.</li>
+        <li>Create memes, guides, or tools for the community.</li>
+        <li>Apply for Rover → Navigator → Pioneer roles.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Links -->
+  <section>
+    <h2>🔗 Official Links</h2>
+    <div class="card">
+      <p><a href="https://x.com/gensynai" target="_blank">🐦 Gensyn on X (Twitter)</a></p>
+      <p><a href="https://github.com/gensynai" target="_blank">💻 Gensyn GitHub</a></p>
+      <p><a href="https://docs.gensyn.ai" target="_blank">📚 Gensyn Docs</a></p>
+      <p><a href="https://discord.gg/gensyn" target="_blank">💬 Gensyn Discord</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Gensyn Community Tool | Built by Contributors
+  </footer>
+
+  <script>
+    function checkReadiness(){
+      let vram = +document.getElementById("vram").value;
+      let cuda = +document.getElementById("cuda").value;
+      let ram = +document.getElementById("ram").value;
+      let cpu = +document.getElementById("cpuCores").value;
+      let storage = +document.getElementById("storage").value;
+      let score = 0;
+
+      if(vram>=12) score+=30; else if(vram>=8) score+=20;
+      if(cuda>=3500) score+=25; else if(cuda>=2000) score+=15;
+      if(ram>=16) score+=15; else if(ram>=8) score+=10;
+      if(cpu>=6) score+=
