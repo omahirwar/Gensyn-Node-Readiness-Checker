@@ -1,179 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gensyn Node Readiness Checker</title>
-  <meta name="description" content="Check if your system is ready to run a Gensyn node. Get a readiness score, guides, and official resources." />
+  <meta name="description" content="A polished, multi‑color, animated tool to check if your system is ready to run a Gensyn node, with guides and official links." />
+  <meta name="theme-color" content="#0b1020" />
   <style>
-    /* ====== Base Styles ====== */
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #f1f5f9;
-      overflow-x: hidden;
-    }
-    a { color: #22d3ee; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    /* =============== Theme & Base =============== */
+    :root{
+      --bg: #070b14;
+      --panel: rgba(16,24,40,.6);
+      --text: #e6edf6;
+      --muted: #a6b1c3;
+      --border: rgba(255,255,255,.12);
 
-    /* ====== Hero Section ====== */
-    header {
-      text-align: center;
-      padding: 60px 20px;
-      background: linear-gradient(120deg, #0ea5e9, #22d3ee, #0ea5e9);
-      background-size: 300% 300%;
-      animation: gradientMove 8s ease infinite;
-    }
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    header img {
-      width: 100px;
-      margin-bottom: 20px;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    header h1 { font-size: 2.5rem; margin: 0; }
-    header p { max-width: 600px; margin: 10px auto 0; }
+      /* Accent palette (multi color) */
+      --c1: #22d3ee; /* cyan */
+      --c2: #a78bfa; /* violet */
+      --c3: #f59e0b; /* amber */
+      --c4: #10b981; /* green */
+      --c5: #ef4444; /* red */
 
-    /* ====== Sections ====== */
-    section {
-      max-width: 1000px;
-      margin: 60px auto;
-      padding: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --blur: saturate(160%) blur(6px);
     }
-    h2 { border-left: 4px solid #22d3ee; padding-left: 10px; }
-
-    /* ====== Card Style ====== */
-    .card {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-      transition: transform 0.3s;
+    [data-theme="light"]{
+      --bg: #f7fafc;
+      --panel: rgba(255,255,255,.7);
+      --text: #0e141b;
+      --muted: #4a5568;
+      --border: rgba(0,0,0,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.1);
     }
-    .card:hover { transform: translateY(-5px); }
 
-    /* ====== Form ====== */
-    label { display: block; margin: 10px 0 5px; }
-    input, select {
-      width: 100%; padding: 10px; border-radius: 8px;
-      border: none; margin-bottom: 10px;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -20%, #1f2937 0%, var(--bg) 45%, #05070d 100%),
+        linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.08));
+      overflow-x:hidden;
     }
-    button {
-      background: #22d3ee; border: none; padding: 12px 20px;
-      border-radius: 8px; cursor: pointer; font-weight: bold;
+
+    /* =============== Animated background particles =============== */
+    .particles{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(10px 10px at 15% 30%, rgba(34,211,238,.12), transparent 60%),
+        radial-gradient(10px 10px at 75% 20%, rgba(167,139,250,.12), transparent 60%),
+        radial-gradient(10px 10px at 60% 80%, rgba(245,158,11,.12), transparent 60%),
+        radial-gradient(10px 10px at 30% 70%, rgba(16,185,129,.12), transparent 60%);
+      animation: floatBG 16s ease-in-out infinite alternate;
     }
-    button:hover { background: #0ea5e9; }
+    @keyframes floatBG{
+      from{transform:translateY(0)}
+      to{transform:translateY(-12px)}
+    }
 
-    /* ====== Result ====== */
-    #score { font-size: 2rem; font-weight: bold; }
-    .status.ok { color: #10b981; }
-    .status.warn { color: #f59e0b; }
-    .status.bad { color: #ef4444; }
+    /* =============== Top Nav =============== */
+    .nav{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: var(--blur);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1100px; margin:0 auto; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; font-weight:700;
+      letter-spacing:.3px;
+    }
+    .brand img{
+      width:34px; height:34px; border-radius:8px; object-fit:contain;
+      filter:drop-shadow(0 4px 10px rgba(34,211,238,.35));
+    }
+    .nav-links a{
+      margin-left:16px; color:var(--text); text-decoration:none; font-weight:600;
+      border-bottom:2px solid transparent; padding-bottom:4px;
+      transition:border-color .2s ease, color .2s ease;
+    }
+    .nav-links a:hover{ border-color:var(--c1); color:var(--c1) }
+    .toggle{
+      display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-weight:600;
+      color:var(--muted);
+    }
 
-    /* ====== Footer ====== */
-    footer {
-      text-align: center;
-      padding: 30px;
-      background: #0f172a;
-      color: #94a3b8;
+    /* =============== Hero =============== */
+    header{
+      position:relative; z-index:1;
+      text-align:center;
+      padding:64px 20px 36px;
+      background:
+        conic-gradient(from 210deg at 55% -10%, rgba(34,211,238,.25), rgba(167,139,250,.25), rgba(16,185,129,.25), rgba(245,158,11,.25), rgba(34,211,238,.25));
+      mask-image: linear-gradient(#000, transparent 85%);
+    }
+    .hero-wrap{
+      max-width:900px; margin:0 auto;
+    }
+    .title{
+      font-size:clamp(28px,4.6vw,44px); margin:0 0 8px; font-weight:800;
+    }
+    .subtitle{
+      margin:0 auto; max-width:780px; color:var(--muted); font-size:clamp(14px,2.4vw,18px);
+    }
+    .cta-row{
+      margin-top:18px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px; padding:12px 16px;
+      border-radius:12px; border:1px solid var(--border);
+      background: linear-gradient(180deg, #0fb7c8, #0aa9b8);
+      color:#041016; font-weight:700; cursor:pointer; box-shadow:var(--shadow);
+    }
+    .btn.secondary{
+      background:linear-gradient(180deg, rgba(167,139,250,.25), rgba(34,211,238,.18));
+      color:var(--text);
+    }
+
+    /* =============== Layout =============== */
+    main{ max-width:1100px; margin:22px auto 60px; padding:0 20px; z-index:1; position:relative; }
+    .grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:22px; }
+    @media (max-width:980px){ .grid{ grid-template-columns:1fr } }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border); border-radius:var(--radius);
+      padding:18px; box-shadow:var(--shadow); backdrop-filter: var(--blur);
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .card:hover{ transform:translateY(-4px); border-color:rgba(34,211,238,.35) }
+    .section-title{
+      margin:0 0 12px; font-weight:800; font-size:20px;
+      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+
+    /* =============== Form =============== */
+    label{ display:block; font-size:13px; color:var(--muted); margin:12px 0 6px; }
+    input, select{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid var(--border); background:#0d1224; color:var(--text);
+      outline:none; transition:border .15s ease, box-shadow .15s ease;
+    }
+    [data-theme="light"] input, [data-theme="light"] select{ background:#fff }
+    input:focus, select:focus{ border-color:var(--c2); box-shadow:0 0 0 3px rgba(167,139,250,.25) }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:720px){ .row{ grid-template-columns:1fr } }
+    .helper{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    /* =============== Results =============== */
+    .score-wrap{ display:flex; align-items:center; gap:14px; margin:10px 0 8px; }
+    .score{ font-size:42px; font-weight:800; letter-spacing:.5px; }
+    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; color:#041016; background:var(--c1); border:1px solid rgba(34,211,238,.35) }
+    .status{ font-weight:800; margin:8px 0 6px }
+    .status.ok{ color:var(--c4) }
+    .status.warn{ color:var(--c3) }
+    .status.bad{ color:var(--c5) }
+    ul{ padding-left:18px; margin:10px 0 }
+    li{ margin:8px 0 }
+
+    /* =============== Links & Guides =============== */
+    .link-list a{
+      display:inline-flex; align-items:center; gap:10px; margin:8px 12px 8px 0;
+      padding:10px 12px; border-radius:12px; text-decoration:none; color:var(--text);
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(34,211,238,.18), rgba(167,139,250,.12));
+      transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .link-list a:hover{ transform:translateY(-2px); border-color:rgba(34,211,238,.35) }
+    .tag{
+      display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
+      background:linear-gradient(90deg, var(--c1), var(--c2)); color:#041016; border:1px solid rgba(34,211,238,.35);
+      margin-left:10px;
+    }
+
+    /* =============== Footer =============== */
+    footer{
+      text-align:center; color:var(--muted); font-size:13px; padding:28px; margin-top:24px;
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
+  <div class="particles"></div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <!-- Replace logo.png with your Gensyn logo file in repo -->
+        <img src="logo.png" alt="Gensyn logo" />
+        <span>Gensyn Readiness</span>
+      </div>
+      <div class="nav-links">
+        <a href="#tool">Checker</a>
+        <a href="#guides">Guides</a>
+        <a href="#links">Official links</a>
+        <a class="toggle" id="themeToggle" title="Toggle theme">🌓 Theme</a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Hero -->
   <header>
-    <img src="https://cryptologos.cc/logos/gensyn-gensyn-logo.png" alt="Gensyn Logo" />
-    <h1>Gensyn Node Readiness Checker</h1>
-    <p>Check if your system is ready to run a Gensyn node. Get a readiness score, guides, and official resources.</p>
+    <div class="hero-wrap">
+      <h1 class="title">Run a Gensyn node with confidence</h1>
+      <p class="subtitle">
+        A professional, multi‑color tool to assess your system for Gensyn. Get a readiness score, clear suggestions, and curated resources.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="#tool">Check readiness</a>
+        <a class="btn secondary" href="#guides">View guides</a>
+      </div>
+    </div>
   </header>
 
-  <!-- Tool -->
-  <section>
-    <h2>⚙️ Check Your System</h2>
-    <div class="card">
-      <label>GPU Name</label>
-      <input id="gpuName" placeholder="e.g. RTX 3060" />
-      <label>VRAM (GB)</label>
-      <input id="vram" type="number" />
-      <label>CUDA Cores</label>
-      <input id="cuda" type="number" />
-      <label>CPU Cores</label>
-      <input id="cpuCores" type="number" />
-      <label>System RAM (GB)</label>
-      <input id="ram" type="number" />
-      <label>Free Storage (GB)</label>
-      <input id="storage" type="number" />
-      <label>Operating System</label>
-      <select id="os">
-        <option>Ubuntu 22.04+</option>
-        <option>Debian 12+</option>
-        <option>Windows 11</option>
-        <option>Windows 10</option>
-        <option>macOS</option>
-      </select>
-      <button onclick="checkReadiness()">Check Readiness</button>
-      <p id="score">--</p>
-      <p id="verdict" class="status"></p>
-      <ul id="suggestions"></ul>
-    </div>
-  </section>
+  <main>
+    <div class="grid" id="tool">
+      <!-- Checker -->
+      <section class="card">
+        <h2 class="section-title">System readiness checker</h2>
 
-  <!-- Guides -->
-  <section>
-    <h2>📖 Guides</h2>
-    <div class="card">
-      <h3>How to Run a Node</h3>
-      <ol>
-        <li>Prepare a system with 6+ CPU cores, 16GB RAM, 100GB storage, and RTX 3060+ GPU.</li>
-        <li>Install Ubuntu 22.04 LTS for best stability.</li>
-        <li>Follow the official <a href="https://github.com/gensynai" target="_blank">Gensyn GitHub</a> setup guide.</li>
-      </ol>
-    </div>
-    <div class="card">
-      <h3>How to Earn Roles</h3>
-      <ul>
-        <li>Be active and helpful in Discord.</li>
-        <li>Create memes, guides, or tools for the community.</li>
-        <li>Apply for Rover → Navigator → Pioneer roles.</li>
-      </ul>
-    </div>
-  </section>
+        <label for="gpuName">GPU name</label>
+        <input id="gpuName" placeholder="e.g., NVIDIA GeForce RTX 3060" />
 
-  <!-- Links -->
-  <section>
-    <h2>🔗 Official Links</h2>
-    <div class="card">
-      <p><a href="https://x.com/gensynai" target="_blank">🐦 Gensyn on X (Twitter)</a></p>
-      <p><a href="https://github.com/gensynai" target="_blank">💻 Gensyn GitHub</a></p>
-      <p><a href="https://docs.gensyn.ai" target="_blank">📚 Gensyn Docs</a></p>
-      <p><a href="https://discord.gg/gensyn" target="_blank">💬 Gensyn Discord</a></p>
-    </div>
-  </section>
+        <div class="row">
+          <div>
+            <label for="vram">GPU VRAM (GB)</label>
+            <input id="vram" type="number" min="0" step="1" placeholder="e.g., 12" />
+          </div>
+          <div>
+            <label for="cuda">CUDA cores</label>
+            <input id="cuda" type="number" min="0" step="1" placeholder="e.g., 3584" />
+          </div>
+        </div>
 
-  <!-- Footer -->
+        <div class="row">
+          <div>
+            <label for="cpuCores">CPU cores</label>
+            <input id="cpuCores" type="number" min="1" step="1" placeholder="e.g., 8" />
+          </div>
+          <div>
+            <label for="ram">System RAM (GB)</label>
+            <input id="ram" type="number" min="1" step="1" placeholder="e.g., 16" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="storage">Free storage (GB)</label>
+            <input id="storage" type="number" min="0" step="1" placeholder="e.g., 100" />
+          </div>
+          <div>
+            <label for="os">Operating system</label>
+            <select id="os">
+              <option value="">Select OS</option>
+              <option>Ubuntu 22.04+</option>
+              <option>Debian 12+</option>
+              <option>Other Linux</option>
+              <option>Windows 11</option>
+              <option>Windows 10</option>
+              <option>macOS (Apple Silicon)</option>
+              <option>macOS (Intel)</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="helper">Tip: If you’re unsure about CUDA cores, search your exact GPU model specs.</p>
+
+        <div class="cta-row" style="justify-content:flex-start;">
+          <button class="btn" id="checkBtn">Calculate readiness</button>
+          <button class="btn secondary" id="resetBtn" title="Clear all fields">Reset</button>
+        </div>
+
+        <p class="helper">Weights: VRAM 40% • CUDA 25% • OS 10% • RAM 10% • CPU 10% • Storage 5%</p>
+      </section>
+
+      <!-- Results -->
+      <section class="card" aria-live="polite">
+        <h2 class="section-title">Results & suggestions</h2>
+
+        <div class="score-wrap">
+          <div class="score" id="score">--</div>
+          <span class="badge" id="badge">No result</span>
+        </div>
+
+        <div id="verdict" class="status">Enter details and calculate.</div>
+        <ul id="suggestions"></ul>
+
+        <div class="helper">
+          Community best‑effort tool. Confirm latest requirements via official Gensyn sources below.
+        </div>
+
+        <div class="cta-row" style="justify-content:flex-start;">
+          <button class="btn secondary" id="shareBtn">Copy result</button>
+        </div>
+        <p class="helper" id="shareMsg"></p>
+      </section>
+    </div>
+
+    <!-- Guides -->
+    <section class="card" id="guides">
+      <h2 class="section-title">Guides: running nodes & earning roles</h2>
+
+      <div class="row">
+        <div class="card">
+          <h3 class="section-title">Run a node (overview)</h3>
+          <ul>
+            <li><strong>Hardware:</strong> 6+ CPU cores, 16 GB RAM, 100 GB storage, RTX 3060+ recommended.</li>
+            <li><strong>OS:</strong> Ubuntu 22.04 LTS for reliability; Windows works but Linux preferred.</li>
+            <li><strong>Drivers:</strong> Latest NVIDIA + CUDA; on AMD, check ROCm compatibility.</li>
+            <li><strong>Ops:</strong> Monitor logs, keep system updated, allocate stable network bandwidth.</li>
+          </ul>
+          <span class="tag">Quick start</span>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Community roles (path)</h3>
+          <ol>
+            <li><strong>Rover:</strong> Be active, help others, keep chats positive.</li>
+            <li><strong>Navigator:</strong> Create guides/tools, support programs, take initiative.</li>
+            <li><strong>Pioneer:</strong> Consistency + creativity + culture; lead discussions and welcome newcomers.</li>
+          </ol>
+          <span class="tag">Culture</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Official links -->
+    <section class="card" id="links">
+      <h2 class="section-title">Official links & resources</h2>
+      <div class="link-list">
+        <a href="https://x.com/gensynai" target="_blank" rel="noopener">🐦 Gensyn on X</a>
+        <a href="https://github.com/gensynai" target="_blank" rel="noopener">💻 Gensyn GitHub</a>
+        <a href="https://docs.gensyn.ai" target="_blank" rel="noopener">📚 Gensyn Docs</a>
+        <a href="https://discord.gg/gensyn" target="_blank" rel="noopener">💬 Gensyn Discord</a>
+      </div>
+      <p class="helper">Tip: Share your readiness result in Discord for feedback from mods and contributors.</p>
+    </section>
+  </main>
+
   <footer>
-    © 2025 Gensyn Community Tool | Built by Contributors
+    © 2025 Gensyn Community Tool • Built by contributors • No tracking
   </footer>
 
   <script>
-    function checkReadiness(){
-      let vram = +document.getElementById("vram").value;
-      let cuda = +document.getElementById("cuda").value;
-      let ram = +document.getElementById("ram").value;
-      let cpu = +document.getElementById("cpuCores").value;
-      let storage = +document.getElementById("storage").value;
-      let score = 0;
+    // Theme toggle
+    const toggle = document.getElementById("themeToggle");
+    const root = document.body;
+    toggle.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme")==="light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+    });
 
-      if(vram>=12) score+=30; else if(vram>=8) score+=20;
-      if(cuda>=3500) score+=25; else if(cuda>=2000) score+=15;
-      if(ram>=16) score+=15; else if(ram>=8) score+=10;
-      if(cpu>=6) score+=
+    // Heuristic baselines (tune as needed)
+    const BASE = {
+      vram_ok: 12, vram_min: 8,
+      cuda_ok: 3500, cuda_min: 2000,
+      ram_ok: 16, ram_min: 8,
+      cpu_ok: 6, cpu_min: 4,
+      storage_ok: 100, storage_min: 50
+    };
+    const OS_SCORES = {
+      "Ubuntu 22.04+": 1.0, "Debian 12+": 0.95, "Other Linux": 0.9,
+      "Windows 11": 0.85, "Windows 10": 0.8,
+      "macOS (Intel)": 0.6, "macOS (Apple Silicon)": 0.55
+    };
+    const WEIGHTS = { vram:.40, cuda:.25, os:.10, ram:.10, cpu:.10, storage:.05 };
+
+    const clamp01 = x => Math.max(0, Math.min(1, x));
+    function scoreLinear(val, min, ok){
+      if (val <= min) return 0;
+      if (val >= ok) return 1;
+      return (val - min) / (ok - min);
+    }
+    function classify(score){
+      if (score >= 0.8) return {label:"Ready", cls:"ok"};
+      if (score >= 0.55) return {label:"Borderline", cls:"warn"};
+      return {label:"Not ready", cls:"bad"};
+    }
+    function parseNumber(id){
+      const v = Number(document.getElementById(id).value);
+      return Number.isFinite(v) ? v : 0;
+    }
+    function buildSuggestions(inputs, finalScore){
+      const s = [];
+      const name = (inputs.gpuName || "").toLowerCase();
+      const isAmd = name.includes("amd") || name.includes("radeon");
+      const isApple = name.includes("apple") || name.includes("m1") || name.includes("m2") || name.includes("m3");
+
+      if (!inputs.gpuName) s.push("Add your exact GPU model for a more accurate assessment.");
+      if (isAmd) s.push("AMD GPUs may require ROCm; check compatibility before proceeding.");
+      if (isApple) s.push("Apple Silicon lacks CUDA; consider an NVIDIA GPU for best compatibility.");
+
+      if (inputs.vram < BASE.vram_ok){
+        s.push(inputs.vram < BASE.vram_min ? "VRAM below ~8 GB. Upgrade your GPU." : "Aim for 12 GB+ VRAM for smoother workloads.");
+      }
+      if (inputs.cuda < BASE.cuda_ok){
+        s.push(inputs.cuda < BASE.cuda_min ? "CUDA cores low. RTX 3060 or higher recommended." : "CUDA count is okay but could be improved for throughput.");
+      }
+      if (inputs.ram < BASE.ram_ok){
+        s.push(inputs.ram < BASE.ram_min ? "System RAM below 8 GB. Upgrade to 16 GB." : "Upgrade to 16 GB RAM for better stability.");
+      }
+      if (inputs.cpuCores < BASE.cpu_ok){
+        s.push(inputs.cpuCores < BASE.cpu_min ? "CPU cores below 4. Go for 6+ cores." : "Consider 6+ CPU cores for reliable performance.");
+      }
+      if (inputs.storage < BASE.storage_ok){
+        s.push(inputs.storage < BASE.storage_min ? "Free storage <50 GB. Target 100 GB+." : "Increase free storage to ~100 GB for logs/datasets.");
+      }
+
+      const osScore = OS_SCORES[inputs.os] || 0.5;
+      if (osScore < 0.9){
+        s.push(inputs.os && inputs.os.includes("Windows")
+          ? "Windows works, but Ubuntu 22.04+ is recommended for reliability."
+          : "Ensure your Linux distro has recent NVIDIA drivers & CUDA.");
+      }
+
+      if (finalScore >= 0.8) s.push("Looks ready. Validate drivers, container runtimes, and keep your system updated.");
+      else if (finalScore >= 0.55) s.push("Borderline. Optimize drivers, free storage, consider RAM/GPU upgrades.");
+      else s.push("Not ready yet. Prioritize GPU/VRAM, then RAM/OS.");
+      return s;
+    }
+
+    function handleCalculate(){
+      const inputs = {
+        gpuName: document.getElementById("gpuName").value.trim(),
+        vram: parseNumber("vram"),
+        cuda: parseNumber("cuda"),
+        cpuCores: parseNumber("cpuCores"),
+        ram: parseNumber("ram"),
+        storage: parseNumber("storage"),
+        os: document.getElementById("os").value
+      };
+
+      const vramScore = scoreLinear(inputs.vram, BASE.vram_min, BASE.vram_ok);
+      const cudaScore = scoreLinear(inputs.cuda, BASE.cuda_min, BASE.cuda_ok);
+      const ramScore  = scoreLinear(inputs.ram, BASE.ram_min, BASE.ram_ok);
+      const cpuScore  = scoreLinear(inputs.cpuCores, BASE.cpu_min, BASE.cpu_ok);
+      const storageScore = scoreLinear(inputs.storage, BASE.storage_min, BASE.storage_ok);
+      const osScore = clamp01(OS_SCORES[inputs.os] || 0.5);
+
+      const total =
+        vramScore   * WEIGHTS.vram +
+        cudaScore   * WEIGHTS.cuda +
+        osScore     * WEIGHTS.os   +
+        ramScore    * WEIGHTS.ram  +
+        cpuScore    * WEIGHTS.cpu  +
+        storageScore* WEIGHTS.storage;
+
+      const pct = Math.round(clamp01(total) * 100);
+      const verdict = classify(total);
+
+      document.getElementById("score").textContent = pct;
+      const badgeEl = document.getElementById("badge");
+      const verdictEl = document.getElementById("verdict");
+      badgeEl.textContent = verdict.label;
+      verdictEl.className = "status " + verdict.cls;
+      verdictEl.textContent =
+        verdict.label === "Ready" ? "Eligible to run a Gensyn node."
+        : verdict.label === "Borderline" ? "Potentially eligible with optimizations."
+        : "Not eligible yet.";
+
+      const suggEl = document.getElementById("suggestions");
+      const suggestions = buildSuggestions(inputs, total);
+      suggEl.innerHTML = "";
+      suggestions.forEach(t => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        suggEl.appendChild(li);
+      });
+    }
+
+    function handleReset(){
+      ["gpuName","vram","cuda","cpuCores","ram","storage"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("os").value = "";
+      document.getElementById("score").textContent = "--";
+      document.getElementById("badge").textContent = "No result";
+      const verdictEl = document.getElementById("verdict");
+      verdictEl.className = "status";
+      verdictEl.textContent = "Enter details and calculate.";
+      document.getElementById("suggestions").innerHTML = "";
+      document.getElementById("shareMsg").textContent = "";
+    }
+
+    function handleShare(){
+      const score = document.getElementById("score").textContent;
+      const badge = document.getElementById("badge").textContent;
+      const verdict = document.getElementById("verdict").textContent;
+      const suggLis = Array.from(document.querySelectorAll("#suggestions li")).map(li => "- " + li.textContent);
+
+      const text = `Gensyn Readiness: ${score}% (${badge})\n${verdict}` + (suggLis.length ? `\nSuggestions:\n${suggLis.join("\n")}` : "");
+      navigator.clipboard.writeText(text)
+        .then(() => { document.getElementById("shareMsg").textContent = "Result copied. Share on Discord/X."; })
+        .catch(() => { document.getElementById("shareMsg").textContent = "Copy failed. Select and copy manually."; });
+    }
+
+    document.getElementById("checkBtn").addEventListener("click", handleCalculate);
+    document.getElementById("resetBtn").addEventListener("click", handleReset);
+    document.getElementById("shareBtn").addEventListener("click", handleShare);
+  </script>
+</body>
+</html>
